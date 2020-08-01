@@ -1,6 +1,11 @@
-def _load_words(path):
-    with open(path) as f:
-        return {line.rstrip() for line in f}
+def _load_valid_words(words_file_path, min_length, max_length):
+    with open(words_file_path) as f:
+        return set(filter(lambda word:
+                          all(letter in 'abcdefghjklmnopqrstuvwxyz' for letter in word) and
+                          min_length <= len(word) <= max_length and
+                          len(set(word)) == len(word),
+                          map(lambda l: l.rstrip(), f))
+                   )
 
 
 def _str_to_board(s):
@@ -40,13 +45,16 @@ def _recursive_backtrack_search(
     board[i][j] = current_word[-1]
 
 
-def _search(column_scores, words_path, board, min_length, max_length):
+def _search(column_scores, words_file_path, board, min_length, max_length):
     results = dict()
     for i in range(len(board)):
         for j in range(len(board)):
             _recursive_backtrack_search(
                 column_scores=column_scores,
-                words=_load_words(words_path),
+                words=_load_valid_words(
+                    words_file_path=words_file_path,
+                    min_length=min_length,
+                    max_length=max_length),
                 board=board,
                 i=i,
                 j=j,
@@ -67,11 +75,11 @@ def _best_words_that_begin_with_different_letters(results, num_best_words):
     return sorted(d.values(), reverse=True)[:num_best_words]
 
 
-def solve_suited_words(words_path, column_scores, board_as_string, min_length, max_length, num_best_words):
+def solve_suited_words(words_file_path, column_scores, board_as_string, min_length, max_length, num_best_words):
     results = sorted(
         _search(
             column_scores=column_scores,
-            words_path=words_path,
+            words_file_path=words_file_path,
             board=_str_to_board(board_as_string),
             min_length=min_length,
             max_length=max_length

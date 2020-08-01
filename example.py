@@ -16,7 +16,7 @@ if __name__ == '__main__':
         *solve_suited_words(
             board_as_string='krocnflueatisdyq',
             column_scores=(10, 5, 2, 1),
-            words_path='words.txt',
+            words_file_path='words.txt',
             min_length=3,
             max_length=6,
             num_best_words=12),
